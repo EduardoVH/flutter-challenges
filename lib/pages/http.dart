@@ -10,10 +10,10 @@ class HttpApi extends StatefulWidget {
 }
 
 class _HttpApiState extends State<HttpApi> {
-  // Método para hacer la solicitud HTTP
+  // Method to fetch data from the API
   Future<List<dynamic>> fetchData() async {
     final url = Uri.parse(
-        'https://api.sampleapis.com/movies/horror'); // Example endpoint
+        'https://api.sampleapis.com/movies/drama'); // Example endpoint
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -27,50 +27,82 @@ class _HttpApiState extends State<HttpApi> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Películas de Terror'),
-        backgroundColor: Colors.orange,
+        title: const Text('Movies'),
+        backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: FutureBuilder<List<dynamic>>(
-          future: fetchData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(
-                color: Colors.orange,
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final List<dynamic> movies = snapshot.data ?? [];
+      body: FutureBuilder<List<dynamic>>(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            final List<dynamic> movies = snapshot.data ?? [];
 
-              return ListView.builder(
-                itemCount: movies.length,
-                itemBuilder: (context, index) {
-                  final movie = movies[index];
-                  return ListTile(
-                    leading: movie['posterURL'] != null
-                        ? SizedBox(
-                            width: 50,
-                            height: 75,
-                            child: Image.network(
-                              movie['posterURL'],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons
-                                    .movie); // Placeholder for broken image
-                              },
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 0.7,
+              ),
+              padding: const EdgeInsets.all(10.0),
+              itemCount: movies.length,
+              itemBuilder: (context, index) {
+                final movie = movies[index];
+                return Card(
+                  elevation: 5.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      movie['posterURL'] != null
+                          ? SizedBox(
+                              width: double.infinity,
+                              height: 150,
+                              child: Image.network(
+                                movie['posterURL'],
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.movie); // Placeholder for broken image
+                                },
+                              ),
+                            )
+                          : const SizedBox(
+                              width: double.infinity,
+                              height: 150,
+                              child: Icon(Icons.movie, size: 100),
                             ),
-                          )
-                        : const Icon(Icons.movie),
-
-                    title: Text(movie['title']), // Movie title
-                    subtitle: Text('IMDB ID: ${movie['imdbId']}'), // IMDB ID
-                  );
-                },
-              );
-            }
-          },
-        ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          movie['title'] ?? 'No Title',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'IMDB ID: ${movie['imdbId'] ?? 'N/A'}',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }

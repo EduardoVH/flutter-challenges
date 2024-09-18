@@ -17,13 +17,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.orange, // Color de fondo de la barra
-          selectedItemColor: Colors.white, // Color de los ítems seleccionados
-          unselectedItemColor:
-          Colors.black54, // Color de los ítems no seleccionados
+          backgroundColor: Colors.blue, // Background color of the bar
+          selectedItemColor: Colors.white, // Color of selected items
+          unselectedItemColor: Colors.black54, // Color of unselected items
         ),
       ),
       home: const MainScreen(),
@@ -41,12 +40,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Lista de pantallas que se muestran en la barra de navegación inferior
+  // List of screens to display in the bottom navigation bar
   final List<Widget> _screens = [
     const HomeScreen(),
+    const ContactInfo(), // Contact information screen
     const ContactsScreen(),
     const HttpApi(),
-    const ContactInfo(), // Pantalla de información de contacto
   ];
 
   void _onItemTapped(int index) {
@@ -66,20 +65,20 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.contacts),
             label: 'Contacts',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.http),
-            label: 'HTTP',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'About',
+            icon: Icon(Icons.movie),
+            label: 'Movies',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: Colors.blue,
         onTap: _onItemTapped,
         showUnselectedLabels: true,
       ),
